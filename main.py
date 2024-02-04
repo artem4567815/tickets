@@ -5,7 +5,10 @@ import json
 import qrcode
 from PIL import Image
 from config import form_id, you
-
+from test import fillingTableByUsers, app
+import time
+from changerQrs import filingTemplate
+import os
 
 SCOPES = "https://www.googleapis.com/auth/forms.responses.readonly"
 DISCOVERY_DOC = "https://forms.googleapis.com/$discovery/rest?version=v1"
@@ -32,8 +35,16 @@ def generationQr(url='/', name='default'):
     return "qr code was created!"
 
 
+sendedToUsers = []
+def QRForUsers(users):
+    for user in range(len(users)):
+        if users[user]["name"] not in sendedToUsers:
+            generationQr(f"http://127.0.0.1:5000/user/{user}/edit", user)
+            filingTemplate(f"qrs/{user}.png", user, users[user]["name"], users[user]["corpus"])
+            #SendMail(f"qrs/{user}.png", users[user]["email"])
+            os.remove(f"qrs/{user}.png")
+            sendedToUsers.append(users[user]["name"])
 def getDataFromForms():
-    global users
     users = []
     result = service.forms().responses().list(formId=form_id).execute()
     with open("test.txt", 'w') as file2:
@@ -48,10 +59,13 @@ def getDataFromForms():
                      "state": "Не пришел",
                      "email": f"{you}"})
 
+    return users
 
     # class: 6399f9cd  name: 455f7693 Contacts: 5d2bcef3  corpus: 3e7403f8
 
-
-def GetUsers():
-    global users
-    return users
+with app.app_context():
+    while True:
+        users = getDataFromForms()
+        fillingTableByUsers(users)
+        QRForUsers(users)
+        time.sleep(60)

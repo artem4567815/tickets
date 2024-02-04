@@ -1,7 +1,9 @@
 from flask import Flask, render_template, redirect, abort
 from flask_sqlalchemy import SQLAlchemy
-from main import GetUsers
 from config import key
+from changerQrs import filingTemplate
+import os
+
 app = Flask(__name__)
 
 app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///users.db'
@@ -17,28 +19,38 @@ class Users(db.Model):
     corpus = db.Column(db.String(100), nullable=False)
     state = db.Column(db.String(100), nullable=False)
 
+def fillingTableByUsers(users):
+    for user in users:
+        exists = db.session.query(db.session.query(Users).filter_by(name=user["name"]).exists()).scalar()
+        if not exists:
+            userdb = Users(name=user['name'], clas=user["class"], corpus=user['corpus'], state=user['state'])
+            try:
+                db.session.add(userdb)
+                db.session.commit()
+            except:
+                print("Error!!!")
 
-sendedToUsers = []
 
 @app.route('/')
 def index():
-    users = GetUsers()
+    users = db.session.query(Users).all()
     return render_template("index.html", users=users)
 
 @app.route('/user/<int:id>/edit')
 def editState(id):
-    users = GetUsers()
+    users = db.session.query(Users).all()
     if id < 0 or id >= len(users):
         abort(404)
     return render_template("edit.html", user=users[id], id=id)
 
 @app.route('/user/<int:id>/came')
 def change(id):
-    users = GetUsers()
+    users = db.session.query(Users).all()
     if id < 0 or id >= len(users):
         abort(404)
-
-    users[id]["state"] = "Пришел"
+    state = "Пришел"
+    rows = Users.query.filter_by(id=id+1).update({'state': state})
+    db.session.commit()
     return redirect('/')
 
 
