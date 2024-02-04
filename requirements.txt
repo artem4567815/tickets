@@ -1,0 +1,7 @@
+PILLow
+httplib2
+oauth2client
+qrcode
+schedule
+flask
+flask_sqlalchemy

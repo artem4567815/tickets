@@ -1,0 +1,24 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Зрители РК</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/index.css')}}">
+</head>
+<body>
+
+<h1 class="title">Зрители РК</h1>
+
+{% for user in users %}
+    <div class="user">
+        {% if user['state'] == "Не пришел" %}
+            <h4>{{ user['name'] }}</h4>
+        {% else %}
+            <strike><h4>{{ user['name'] }}</h4></strike>
+        {% endif %}
+        <h6>Класс: {{ user['class'] }}, Корпус: {{ user['corpus']}}, Статус: {{ user["state"] }}</h6>
+        <a href="/user/{{ loop.index0 }}/edit" class="button">Отметить</a>
+    </div>
+{% endfor %}
+</body>
+</html>

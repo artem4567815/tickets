@@ -1,0 +1,14 @@
+*{
+    box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif;
+}
+
+
+.button{
+    padding: 5px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 600;
+    color: black;
+    background-color: green;
+}
