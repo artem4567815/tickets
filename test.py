@@ -1,12 +1,10 @@
 from flask import Flask, render_template, redirect, abort
 from flask_sqlalchemy import SQLAlchemy
 from config import key
-from changerQrs import filingTemplate
-import os
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///users.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 app.config['SECRET_KEY'] = key
 
 
@@ -18,22 +16,27 @@ class Users(db.Model):
     clas = db.Column(db.String(100), nullable=False)
     corpus = db.Column(db.String(100), nullable=False)
     state = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(100), nullable=False)
+
 
 def fillingTableByUsers(users):
     for user in users:
         exists = db.session.query(db.session.query(Users).filter_by(name=user["name"]).exists()).scalar()
         if not exists:
-            userdb = Users(name=user['name'], clas=user["class"], corpus=user['corpus'], state=user['state'])
+            userdb = Users(name=user['name'], clas=user["class"], corpus=user['corpus'], state=user['state'],
+                           email=user['email'])
             try:
                 db.session.add(userdb)
                 db.session.commit()
             except:
                 print("Error!!!")
 
-
 @app.route('/')
 def index():
     users = db.session.query(Users).all()
+    for user in users:
+        if len(user.name) > 50:
+            user.name = user.name[0:50] + "..."
     return render_template("index.html", users=users)
 
 @app.route('/user/<int:id>/edit')

@@ -16,7 +16,7 @@
         {% else %}
             <strike><h4>{{ user['name'] }}</h4></strike>
         {% endif %}
-        <h6>Класс: {{ user['class'] }}, Корпус: {{ user['corpus']}}, Статус: {{ user["state"] }}</h6>
+        <h6>Класс: {{ user['clas'] }}, Корпус: {{ user['corpus']}}, Статус: {{ user["state"] }}</h6>
         <a href="/user/{{ loop.index0 }}/edit" class="button">Отметить</a>
     </div>
 {% endfor %}

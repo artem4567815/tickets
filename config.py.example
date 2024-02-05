@@ -1,5 +1,4 @@
 form_id = "<FORMS ID>"
 me = '<YOUR EMAIL>'
 password = "<YOUR GOOGLE PASSWORD>"
-you = "<NOT YOUR EMAIL>"
 key = '<SECRET KEY>'

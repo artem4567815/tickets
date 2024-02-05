@@ -5,12 +5,11 @@ from email.mime.multipart import MIMEMultipart
 from config import me, password
 
 def SendMail(ImgFileName, email):
-    you = email
     img_data = open(ImgFileName, 'rb').read()
     msg = MIMEMultipart()
     msg['Subject'] = "Билет на Рок-Концерт"
     msg['From'] = me
-    msg['To'] = you
+    msg['To'] = email
 
     image = MIMEImage(img_data, name=os.path.basename(ImgFileName))
     msg.attach(image)
@@ -20,6 +19,6 @@ def SendMail(ImgFileName, email):
     s.starttls()
     s.ehlo()
     s.login(me, password)
-    s.sendmail(me, you, msg.as_string())
+    s.sendmail(me, email, msg.as_string())
     s.quit()
-    print("SENDED!")
+    print("SANDED!")
